@@ -54,9 +54,9 @@
         
         if([self itemViewHasLeftParentView])
         {
-            if ([self.moveDelegate respondsToSelector:@selector(itemViewLeftParentScrollView:)])
+            if ([self.moveDelegate respondsToSelector:@selector(itemView:leftParentScrollView:)])
             {
-                [self.moveDelegate itemViewLeftParentScrollView:self];
+                //[self.moveDelegate itemView:self leftParentScrollView:(ADScrollView *)self.superview];
             }
         }
         
@@ -109,13 +109,13 @@
         }
         
     }
-    else if ([[touches anyObject] tapCount] == 1)
-    {
-        NSLog(@"Single tap!");
-    }
     else if ([[touches anyObject] tapCount] == 2)
     {
         NSLog(@"Double tap!");
+    }
+    else if ([[touches anyObject] tapCount] == 1)
+    {
+        NSLog(@"Single tap!");
     }
 }
 

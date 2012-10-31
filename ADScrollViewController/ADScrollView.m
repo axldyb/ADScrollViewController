@@ -185,16 +185,38 @@
 
 #pragma mark - Calculate Index For Item
 
-- (void)itemsGotRearranged
+- (void)orderRearrangedByItem:(ADItemView *)itemView
 {
     NSInteger itemViewSpace = [self singleItemViewTotalWidth];
     
-    for (ADItemView *itemView in self.visibleItems)
+    // New index calculation
+    NSInteger newIndex = itemView.frame.origin.x / itemViewSpace;
+    
+    // Only set new index if the index changes
+    if (itemView.index != newIndex)
     {
-        NSInteger newIndex = itemView.frame.origin.x / itemViewSpace;
+        NSLog(@"%@, old:%i, new:%i <-", itemView.name, itemView.index, newIndex);
+        
+        // Update data source
+        if ([self.ADDelegate respondsToSelector:@selector(scrollView:itemWithIndex:changedToIndex:)])
+        {
+            [self.ADDelegate scrollView:self itemWithIndex:itemView.index changedToIndex:newIndex];
+        }
+        else
+        {
+            NSLog(@"ERROR: Delegate doesn't respond. Item indexes may be wrong!");
+        }
+        
+        // Set view new index
         itemView.index = newIndex;
         
         // Update database here as well
+    }
+    
+    for (ADItemView *visibleItemView in self.visibleItems)
+    {
+        NSInteger newVisibleIndex = visibleItemView.frame.origin.x / itemViewSpace;
+        visibleItemView.index = newVisibleIndex;
     }
 }
 
@@ -257,15 +279,12 @@
             
             [otherItem goHome];
             draggingItemShift += ([otherItem frame].size.width + self.itemPadding) * (draggingRight ? 1 : -1);
-            
-            [self itemsGotRearranged]; // TODO: (AD) fix to run olny once, not for each item to shit.
         }
         
         // change the home of the dragging item, but don't send it there because it's still being dragged
         CGRect home = [itemView home];
         home.origin.x += draggingItemShift;
         [itemView setHome:home];
-        
     }
 }
 
@@ -274,6 +293,8 @@
     // if the user lets go of the item view, stop autoscrolling
     [self.autoscrollTimer invalidate];
     self.autoscrollTimer = nil;
+    
+    [self orderRearrangedByItem:itemView];
 }
 
 

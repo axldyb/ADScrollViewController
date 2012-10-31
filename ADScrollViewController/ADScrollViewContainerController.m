@@ -85,9 +85,28 @@
 
 #pragma mark - ADItemViewMoveDelegate
 
-- (void)itemViewLeftParentScrollView:(ADItemView *)itemView
+- (void)itemView:(ADItemView *)itemView leftParentScrollView:(ADScrollView *)scrollView
 {
     NSLog(@"I leave now");
+    for (ADScrollViewController *scrollViewController in self.scrollViews)
+    {
+        if (scrollViewController.scrollView == scrollView)
+        {
+            itemView.originParentView = scrollView;
+            //[itemView removeFromSuperview];
+            [scrollView.visibleItems removeObject:itemView];
+            [scrollViewController removeItemView:itemView];
+        }
+        else
+        {
+            NSLog(@"Just trolling around in space");
+        }
+    }
+}
+
+- (void)itemView:(ADItemView *)itemView droppedOutsideParentScrollView:(ADScrollView *)scrollView
+{
+    NSLog(@"Poff!");
 }
 
 @end

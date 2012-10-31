@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @class ADItemView;
+@class ADScrollView;
 
 @protocol ADItemViewMoveDelegate <NSObject>
 
 @required
-- (void)itemViewLeftParentScrollView:(ADItemView*)itemView;
+- (void)itemView:(ADItemView*)itemView leftParentScrollView:(ADScrollView *)scrollView;
+
+- (void)itemView:(ADItemView*)itemView droppedOutsideParentScrollView:(ADScrollView *)scrollView;
 
 @end

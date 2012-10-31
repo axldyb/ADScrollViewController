@@ -20,7 +20,7 @@
     self = [super init];
     if (self)
     {
-        self.items = [[NSMutableArray alloc] init];
+        //self.items = [[NSMutableArray alloc] init];
         
         self.scrollView = [[ADScrollView alloc] initWithFrame:frame];
         self.scrollView.dataSource = self;
@@ -59,7 +59,7 @@
 {
     [self.items removeObject:itemView];
     
-    //[self.scrollView reloadItems];
+    [self.scrollView reloadItems];
 }
 
 
@@ -84,6 +84,15 @@
     
 #warning send message to container to move levels up or down
     // [delegtae didSelectItemInScrollView];
+}
+
+- (void)scrollView:(ADScrollView *)scrollview itemWithIndex:(NSInteger)oldIndex changedToIndex:(NSInteger)newIndex
+{
+    id objectToMove = [self.items objectAtIndex:oldIndex];
+    [self.items removeObject:objectToMove];
+    [self.items insertObject:objectToMove atIndex:newIndex];
+    
+    //NSLog(@"%@, old:%i, new:%i", (NSString *)objectToMove, oldIndex, newIndex);
 }
 
 

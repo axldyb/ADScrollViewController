@@ -19,6 +19,18 @@ static const int kADItemViewHeight = 80;
 
 @implementation DemoScrollViewController
 
+- (id)initWithFrame:(CGRect)frame andLevelName:(NSString *)levelName
+{
+    self = [super initWithFrame:frame andLevelName:levelName];
+    if (self)
+    {
+        NSArray *objects = [NSArray arrayWithObjects:@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", nil];
+        self.items = [[NSMutableArray alloc] initWithArray:objects];
+        [(ADScrollView *)self.view reloadItems];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -34,7 +46,7 @@ static const int kADItemViewHeight = 80;
 
 - (NSInteger)numberOfItemsInScrollView:(ADScrollView *)scrollView
 {
-    return 40;
+    return self.items.count;
 }
 
 
@@ -56,6 +68,15 @@ static const int kADItemViewHeight = 80;
     
     [itemView setFrame:itemFrame];
     itemView.backgroundColor = [UIColor yellowColor];
+    itemView.name = (NSString *)[self.items objectAtIndex:index];
+    
+    UILabel *itemViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kADItemViewWidth, kADItemViewHeight)];
+    //itemViewLabel.backgroundColor = [UIColor clearColor];
+    itemViewLabel.text = (NSString *)[self.items objectAtIndex:index];
+    itemViewLabel.textColor = [UIColor blackColor];
+    itemViewLabel.textAlignment = UITextAlignmentCenter;
+    itemViewLabel.font = [UIFont fontWithName:@"Helvetica" size:60];
+    [itemView addSubview:itemViewLabel];
     
     return itemView;
 }

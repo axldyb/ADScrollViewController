@@ -10,6 +10,8 @@
 #import "ADItemViewDelegate.h"
 #import "ADItemViewMoveDelegate.h" 
 
+@class ADScrollView;
+
 @interface ADItemView : UIView
 
 @property (nonatomic, assign) NSInteger index;
@@ -20,6 +22,10 @@
 @property (nonatomic, assign) CGPoint touchLocation;
 
 @property (nonatomic, assign) NSInteger dragThreshold;
+
+@property (nonatomic, strong) ADScrollView *originParentView;
+
+@property (nonatomic, strong) NSString *name;
 
 @property (unsafe_unretained) id <ADItemViewDelegate> delegate;
 

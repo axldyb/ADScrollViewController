@@ -16,6 +16,8 @@
 @required
 - (ADItemView *)scrollView:(ADScrollView *)scrollView itemAtIndex:(NSInteger)index;
 
+- (void)scrollView:(ADScrollView *)scrollview itemWithIndex:(NSInteger)oldIndex changedToIndex:(NSInteger)newIndex;
+
 @optional
 - (void)scrollView:(ADScrollView *)scrollView didSelectItemAtIndex:(NSInteger)index;
 
