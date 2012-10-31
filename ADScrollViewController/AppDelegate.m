@@ -7,14 +7,16 @@
 //
 
 #import "AppDelegate.h"
+#import "DemoScrollViewContainerController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    
+    DemoScrollViewContainerController *demoScrollViewContainerController = [[DemoScrollViewContainerController alloc] init];
+    self.window.rootViewController = demoScrollViewContainerController;
     [self.window makeKeyAndVisible];
     return YES;
 }

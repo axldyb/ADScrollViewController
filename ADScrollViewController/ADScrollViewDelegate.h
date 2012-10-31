@@ -7,7 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ADItemView.h"
+
+@class ADScrollView;
 
 @protocol ADScrollViewDelegate <NSObject>
+
+@required
+- (ADItemView *)scrollView:(ADScrollView *)scrollView itemAtIndex:(NSInteger)index;
+
+@optional
+- (void)scrollView:(ADScrollView *)scrollView didSelectItemAtIndex:(NSInteger)index;
 
 @end

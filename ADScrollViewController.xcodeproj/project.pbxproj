@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BB53A41A162F406A00D2FBCD /* ADItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB53A419162F406A00D2FBCD /* ADItemView.m */; };
+		BB53A42A162F6E3100D2FBCD /* DemoScrollViewContainerController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB53A429162F6E3100D2FBCD /* DemoScrollViewContainerController.m */; };
+		BB53A42D162F737500D2FBCD /* DemoScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB53A42C162F737500D2FBCD /* DemoScrollViewController.m */; };
 		BB7BFA03162CA46D00A68B37 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB7BFA02162CA46D00A68B37 /* UIKit.framework */; };
 		BB7BFA05162CA46D00A68B37 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB7BFA04162CA46D00A68B37 /* Foundation.framework */; };
 		BB7BFA07162CA46D00A68B37 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB7BFA06162CA46D00A68B37 /* CoreGraphics.framework */; };
@@ -16,9 +19,20 @@
 		BB7BFA15162CA46D00A68B37 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = BB7BFA14162CA46D00A68B37 /* Default.png */; };
 		BB7BFA17162CA46D00A68B37 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BB7BFA16162CA46D00A68B37 /* Default@2x.png */; };
 		BB7BFA19162CA46E00A68B37 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BB7BFA18162CA46E00A68B37 /* Default-568h@2x.png */; };
+		BB7BFA21162CA4FA00A68B37 /* ADScrollViewContainerController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7BFA20162CA4FA00A68B37 /* ADScrollViewContainerController.m */; };
+		BB7BFA25162CA5E400A68B37 /* ADScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7BFA24162CA5E400A68B37 /* ADScrollViewController.m */; };
+		BB7BFA28162CA6B800A68B37 /* ADScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7BFA27162CA6B800A68B37 /* ADScrollView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BB53A418162F406A00D2FBCD /* ADItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADItemView.h; sourceTree = "<group>"; };
+		BB53A419162F406A00D2FBCD /* ADItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADItemView.m; sourceTree = "<group>"; };
+		BB53A41C162F536C00D2FBCD /* ADScrollViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADScrollViewDelegate.h; sourceTree = "<group>"; };
+		BB53A421162F544600D2FBCD /* ADScrollViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADScrollViewDataSource.h; sourceTree = "<group>"; };
+		BB53A428162F6E3100D2FBCD /* DemoScrollViewContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoScrollViewContainerController.h; sourceTree = "<group>"; };
+		BB53A429162F6E3100D2FBCD /* DemoScrollViewContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoScrollViewContainerController.m; sourceTree = "<group>"; };
+		BB53A42B162F737500D2FBCD /* DemoScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoScrollViewController.h; sourceTree = "<group>"; };
+		BB53A42C162F737500D2FBCD /* DemoScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoScrollViewController.m; sourceTree = "<group>"; };
 		BB7BF9FE162CA46D00A68B37 /* ADScrollViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ADScrollViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB7BFA02162CA46D00A68B37 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BB7BFA04162CA46D00A68B37 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -32,6 +46,13 @@
 		BB7BFA14162CA46D00A68B37 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		BB7BFA16162CA46D00A68B37 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		BB7BFA18162CA46E00A68B37 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		BB7BFA1F162CA4FA00A68B37 /* ADScrollViewContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADScrollViewContainerController.h; sourceTree = "<group>"; };
+		BB7BFA20162CA4FA00A68B37 /* ADScrollViewContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADScrollViewContainerController.m; sourceTree = "<group>"; };
+		BB7BFA23162CA5E400A68B37 /* ADScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADScrollViewController.h; sourceTree = "<group>"; };
+		BB7BFA24162CA5E400A68B37 /* ADScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADScrollViewController.m; sourceTree = "<group>"; };
+		BB7BFA26162CA6B800A68B37 /* ADScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADScrollView.h; sourceTree = "<group>"; };
+		BB7BFA27162CA6B800A68B37 /* ADScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADScrollView.m; sourceTree = "<group>"; };
+		BBE67EC3163F55CC003F393E /* ADContainerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADContainerDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +69,56 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BB53A41D162F537600D2FBCD /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				BB7BFA1F162CA4FA00A68B37 /* ADScrollViewContainerController.h */,
+				BB7BFA20162CA4FA00A68B37 /* ADScrollViewContainerController.m */,
+				BB7BFA23162CA5E400A68B37 /* ADScrollViewController.h */,
+				BB7BFA24162CA5E400A68B37 /* ADScrollViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		BB53A41E162F538C00D2FBCD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BB7BFA26162CA6B800A68B37 /* ADScrollView.h */,
+				BB7BFA27162CA6B800A68B37 /* ADScrollView.m */,
+				BB53A418162F406A00D2FBCD /* ADItemView.h */,
+				BB53A419162F406A00D2FBCD /* ADItemView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		BB53A41F162F53A700D2FBCD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		BB53A420162F53B500D2FBCD /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BB53A41C162F536C00D2FBCD /* ADScrollViewDelegate.h */,
+				BB53A421162F544600D2FBCD /* ADScrollViewDataSource.h */,
+				BBE67EC3163F55CC003F393E /* ADContainerDelegate.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		BB53A427162F6DC200D2FBCD /* Example */ = {
+			isa = PBXGroup;
+			children = (
+				BB53A428162F6E3100D2FBCD /* DemoScrollViewContainerController.h */,
+				BB53A429162F6E3100D2FBCD /* DemoScrollViewContainerController.m */,
+				BB53A42B162F737500D2FBCD /* DemoScrollViewController.h */,
+				BB53A42C162F737500D2FBCD /* DemoScrollViewController.m */,
+			);
+			name = Example;
+			sourceTree = "<group>";
+		};
 		BB7BF9F3162CA46D00A68B37 = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +151,8 @@
 			children = (
 				BB7BFA11162CA46D00A68B37 /* AppDelegate.h */,
 				BB7BFA12162CA46D00A68B37 /* AppDelegate.m */,
+				BB7BFA22162CA52000A68B37 /* ADScrollViewController */,
+				BB53A427162F6DC200D2FBCD /* Example */,
 				BB7BFA09162CA46D00A68B37 /* Supporting Files */,
 			);
 			path = ADScrollViewController;
@@ -97,6 +170,17 @@
 				BB7BFA18162CA46E00A68B37 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BB7BFA22162CA52000A68B37 /* ADScrollViewController */ = {
+			isa = PBXGroup;
+			children = (
+				BB53A41D162F537600D2FBCD /* Controllers */,
+				BB53A41E162F538C00D2FBCD /* Views */,
+				BB53A41F162F53A700D2FBCD /* Models */,
+				BB53A420162F53B500D2FBCD /* Protocols */,
+			);
+			name = ADScrollViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,6 +250,12 @@
 			files = (
 				BB7BFA0F162CA46D00A68B37 /* main.m in Sources */,
 				BB7BFA13162CA46D00A68B37 /* AppDelegate.m in Sources */,
+				BB7BFA21162CA4FA00A68B37 /* ADScrollViewContainerController.m in Sources */,
+				BB7BFA25162CA5E400A68B37 /* ADScrollViewController.m in Sources */,
+				BB7BFA28162CA6B800A68B37 /* ADScrollView.m in Sources */,
+				BB53A41A162F406A00D2FBCD /* ADItemView.m in Sources */,
+				BB53A42A162F6E3100D2FBCD /* DemoScrollViewContainerController.m in Sources */,
+				BB53A42D162F737500D2FBCD /* DemoScrollViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +366,7 @@
 				BB7BFA1E162CA46E00A68B37 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

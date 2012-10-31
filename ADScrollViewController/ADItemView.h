@@ -10,4 +10,15 @@
 
 @interface ADItemView : UIView
 
+@property (nonatomic, assign) NSInteger index;
+
+@property (nonatomic, assign) CGRect home;
+
+// Location of touch in own coordinates (stays constant during dragging).
+@property (nonatomic, assign) CGPoint touchLocation;
+
+- (void)goHome;
+
+- (void)moveByOffset:(CGPoint)offset;
+
 @end

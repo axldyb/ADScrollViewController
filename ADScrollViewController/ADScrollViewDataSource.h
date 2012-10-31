@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+@class ADScrollView;
+
 @protocol ADScrollViewDataSource <NSObject>
+
+@required
+- (NSInteger)numberOfItemsInScrollView:(ADScrollView *)scrollView;
 
 @end

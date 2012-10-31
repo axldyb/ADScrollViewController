@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+//@class ADScrollViewContainerController;
+
 @protocol ADContainerDelegate <NSObject>
+
+@required
+- (void)notyestblabla;
 
 @end

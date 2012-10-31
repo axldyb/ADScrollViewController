@@ -7,7 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ADScrollView.h"
+#import "ADScrollViewDelegate.h"
+#import "ADScrollViewDataSource.h"
 
-@interface ADScrollViewController : UIViewController
+@interface ADScrollViewController : UIViewController <ADScrollViewDelegate, ADScrollViewDataSource>
+
+@property (nonatomic, strong) NSString *levelNameString;
+
+@property (nonatomic, strong) NSMutableArray *items;
+
+@property (nonatomic, strong) ADScrollView *scrollView;
+
+- (id)initWithFrame:(CGRect)frame andLevelName:(NSString *)levelName;
+
+- (void)addItemView:(UIView *)itemView;
+
+- (void)removeItemView:(UIView *)itemView;
 
 @end

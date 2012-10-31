@@ -7,6 +7,7 @@
 //
 
 #import "DemoScrollViewController.h"
+#import "ADItemView.h"
 
 @interface DemoScrollViewController ()
 
@@ -14,25 +15,36 @@
 
 @implementation DemoScrollViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+}
+
+
+- (NSInteger)numberOfItemsInScrollView:(ADScrollView *)scrollView
+{
+    return 40;
+}
+
+- (ADItemView *)scrollView:(ADScrollView *)scrollView itemAtIndex:(NSInteger)index
+{
+    ADItemView *itemView = [scrollView dequeueRecycledItem];
+    if (!itemView)
+    {
+        itemView = [[ADItemView alloc] init];
+    }
+    
+    CGRect itemFrame = CGRectMake(10 + (100 * index) , 10, 80, 80);
+    [itemView setFrame:itemFrame];
+    
+    itemView.backgroundColor = [UIColor yellowColor];
+    
+    return itemView;
 }
 
 @end
