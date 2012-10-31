@@ -6,23 +6,20 @@
 //  Copyright (c) 2012 Aksel Dybdal. All rights reserved.
 //
 
-static const int kTempItemWidth = 45;
-static const int kTempItemMargin = 10;
-
 #import "ADScrollView.h"
-
-#define THUMB_H_PADDING 12 // Put this into a delegate
-#define AUTOSCROLL_THRESHOLD 30
 
 @interface ADScrollView () <UIScrollViewDelegate>
 
-// Recycling properties
-@property (nonatomic, strong) NSMutableSet *visibleItems;
+// Recycling property
 @property (nonatomic, strong) NSMutableSet *recycledItems;
 
 // Autoscrolling properties
 @property (nonatomic, strong) NSTimer *autoscrollTimer;
 @property (nonatomic, assign) float autoscrollDistance;
+
+// Apparence properties
+@property (nonatomic, assign) NSInteger itemPadding;
+@property (nonatomic, assign) NSInteger autoscrollThreshold;
 
 @end
 
@@ -38,6 +35,39 @@ static const int kTempItemMargin = 10;
     return self;
 }
 
+- (NSInteger)itemPadding
+{
+    if (!_itemPadding)
+    {
+        if ([self.ADDelegate respondsToSelector:@selector(itemViewPaddingForScrollview:)])
+        {
+        _itemPadding = [self.ADDelegate itemViewPaddingForScrollview:self] * 2;
+        }
+        else
+        {
+            _itemPadding = 12;
+        }
+    }
+    
+    return _itemPadding;
+}
+
+- (NSInteger)autoscrollThreshold
+{
+    if (!_autoscrollThreshold)
+    {
+        if ([self.ADDelegate respondsToSelector:@selector(autoscrollingThresholdForScrollview:)])
+        {
+        _autoscrollThreshold = [self.ADDelegate autoscrollingThresholdForScrollview:self];
+        }
+        else 
+        {
+            _autoscrollThreshold = 30;
+        }
+    }
+    
+    return _autoscrollThreshold;
+}
 
 #pragma mark - Setup
 
@@ -97,18 +127,20 @@ static const int kTempItemMargin = 10;
     {
         if (![self isDisplayingItemForIndex:index])
         {
-            ADItemView *item;
+            ADItemView *itemView;
             if ([self.dataSource respondsToSelector:@selector(scrollView:itemAtIndex:)])
             {
-                item = [self.ADDelegate scrollView:self itemAtIndex:index];
+                itemView = [self.ADDelegate scrollView:self itemAtIndex:index];
             }
             
             // All generic attributes updated here
-            item.index = index;
-            item.home = item.frame;
+            itemView.index = index;
+            itemView.home = itemView.frame;
+            itemView.delegate = self;
+            itemView.dragThreshold = [self.ADDelegate itemViewDragThresholdForScrollview:self];
             
-            [self addSubview:item];
-            [self.visibleItems addObject:item];
+            [self addSubview:itemView];
+            [self.visibleItems addObject:itemView];
         }
     }
     
@@ -119,20 +151,21 @@ static const int kTempItemMargin = 10;
 
 - (ADItemView *)dequeueRecycledItem // Make public
 {
-    ADItemView *item = [self.recycledItems anyObject];
-    if (item)
+    ADItemView *itemView = [self.recycledItems anyObject];
+    if (itemView)
     {
-        [self.recycledItems removeObject:item];
+        [self.recycledItems removeObject:itemView];
     }
-    return item;
+    return itemView;
 }
 
 - (BOOL)isDisplayingItemForIndex:(NSUInteger)index
 {
     BOOL foundPage = NO;
-    for (ADItemView *item in self.visibleItems)
+    for (ADItemView *itemView in self.visibleItems)
     {
-        if (item.index == index) {
+        if (itemView.index == index)
+        {
             foundPage = YES;
             break;
         }
@@ -141,21 +174,34 @@ static const int kTempItemMargin = 10;
 }
 
 
-#pragma mark - ThumbImageViewDelegate methods
+#pragma mark - Calculate Index For Item
 
-- (void)thumbImageViewStartedTracking:(ADItemView *)tiv {
-    
+- (void)itemsGotRearranged
+{
+    for (ADItemView *itemView in self.visibleItems)
+    {
+        
+        
+        // Update database here as well
+    }
+}
+
+
+#pragma mark - ADItemViewDelegate methods
+
+- (void)itemViewStartedTracking:(ADItemView *)itemView
+{
     //[self bringSubviewToFront:tiv];
 }
 
-- (void)thumbImageViewMoved:(ADItemView *)itemView {
-    
+- (void)itemViewMoved:(ADItemView *)itemView
+{
     // check if we've moved close enough to an edge to autoscroll, or far enough away to stop autoscrolling
-    [self maybeAutoscrollForThumb:itemView];
+    //[self maybeAutoscrollForItem:itemView];
     
     // we'll reorder only if the item view is overlapping the scroll view
-    if (CGRectIntersectsRect([itemView frame], [self bounds])) {
-        
+    if (CGRectIntersectsRect([itemView frame], [self bounds]))
+    {
         BOOL draggingRight = [itemView frame].origin.x > [itemView home].origin.x ? YES : NO;
 
         NSMutableArray *itemsToShift = [[NSMutableArray alloc] init];
@@ -168,37 +214,40 @@ static const int kTempItemMargin = 10;
         float maxX = draggingRight ? touchLocation.x : CGRectGetMinX([itemView home]);
         
         // iterate through item views and see which ones need to move over
-        for (ADItemView *item in self.recycledItems) {
+        for (ADItemView *item in self.visibleItems)
+        {
             
-            // skip the thumb being dragged
+            // skip the item being dragged
             if (item == itemView) continue;
             
-            // skip non-thumb subviews of the scroll view (such as the scroll indicators)
+            // skip non-item subviews of the scroll view (such as the scroll indicators)
             if (! [item isMemberOfClass:[ADItemView class]]) continue;
             
             float itemMidpoint = CGRectGetMidX([item home]);
-            if (itemMidpoint >= minX && itemMidpoint <= maxX) {
+            if (itemMidpoint >= minX && itemMidpoint <= maxX)
+            {
                 [itemsToShift addObject:item];
             }
         }
         
-        // shift over the other thumbs to make room for the dragging thumb. (if we're dragging right, they shift to the left)
-        float otherItemShift = ([itemView home].size.width + THUMB_H_PADDING) * (draggingRight ? -1 : 1);
+        // shift over the other items to make room for the dragging item. (if we're dragging right, they shift to the left)
+        float otherItemShift = ([itemView home].size.width + self.itemPadding) * (draggingRight ? -1 : 1);
         
-        // as we shift over the other thumbs, we'll calculate how much the dragging thumb's home is going to move
+        // as we shift over the other items, we'll calculate how much the dragging item's home is going to move
         float draggingItemShift = 0.0;
         
-        // send each of the shifting thumbs to its new home
-        for (ADItemView *otherItem in itemsToShift) {
+        // send each of the shifting items to its new home
+        for (ADItemView *otherItem in itemsToShift)
+        {
             CGRect home = [otherItem home];
             home.origin.x += otherItemShift;
             [otherItem setHome:home];
             
             [otherItem goHome];
-            draggingItemShift += ([otherItem frame].size.width + THUMB_H_PADDING) * (draggingRight ? 1 : -1);
+            draggingItemShift += ([otherItem frame].size.width + self.itemPadding) * (draggingRight ? 1 : -1);
         }
         
-        // change the home of the dragging thumb, but don't send it there because it's still being dragged
+        // change the home of the dragging item, but don't send it there because it's still being dragged
         CGRect home = [itemView home];
         home.origin.x += draggingItemShift;
         [itemView setHome:home];
@@ -206,8 +255,9 @@ static const int kTempItemMargin = 10;
     }
 }
 
-- (void)thumbImageViewStoppedTracking:(ADItemView *)tiv {
-    // if the user lets go of the thumb image view, stop autoscrolling
+- (void)itemViewStoppedTracking:(ADItemView *)itemView
+{
+    // if the user lets go of the item view, stop autoscrolling
     [self.autoscrollTimer invalidate];
     self.autoscrollTimer = nil;
 }
@@ -215,47 +265,53 @@ static const int kTempItemMargin = 10;
 
 #pragma mark - Autoscrolling methods
 
-- (void)maybeAutoscrollForThumb:(ADItemView *)thumb {
-    
+- (void)maybeAutoscrollForItem:(ADItemView *)item
+{
     self.autoscrollDistance = 0;
     
-    // only autoscroll if the thumb is overlapping the thumbScrollView
-    if (CGRectIntersectsRect([thumb frame], [self bounds])) {
-        
-        CGPoint touchLocation = [thumb convertPoint:[thumb touchLocation] toView:self];
+    // only autoscroll if the item is overlapping the scroll view
+    if (CGRectIntersectsRect([item frame], [self bounds]))
+    {
+        CGPoint touchLocation = [item convertPoint:[item touchLocation] toView:self];
         float distanceFromLeftEdge  = touchLocation.x - CGRectGetMinX([self bounds]);
         float distanceFromRightEdge = CGRectGetMaxX([self bounds]) - touchLocation.x;
         
-        if (distanceFromLeftEdge < AUTOSCROLL_THRESHOLD) {
+        if (distanceFromLeftEdge < self.autoscrollThreshold)
+        {
             self.autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromLeftEdge] * -1; // if scrolling left, distance is negative
-        } else if (distanceFromRightEdge < AUTOSCROLL_THRESHOLD) {
+        } else if (distanceFromRightEdge < self.autoscrollThreshold)
+        {
             self.autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromRightEdge];
         }
     }
     
     // if no autoscrolling, stop and clear timer
-    if (self.autoscrollDistance == 0) {
+    if (self.autoscrollDistance == 0)
+    {
         [self.autoscrollTimer invalidate];
         self.autoscrollTimer = nil;
     }
     
     // otherwise create and start timer (if we don't already have a timer going)
-    else if (self.autoscrollTimer == nil) {
+    else if (self.autoscrollTimer == nil)
+    {
         self.autoscrollTimer = [NSTimer scheduledTimerWithTimeInterval:(1.0 / 60.0)
-                                                           target:self
-                                                         selector:@selector(autoscrollTimerFired:)
-                                                         userInfo:thumb
-                                                          repeats:YES];
+                                                                target:self
+                                                              selector:@selector(autoscrollTimerFired:)
+                                                              userInfo:item
+                                                               repeats:YES];
     }
 }
 
-- (float)autoscrollDistanceForProximityToEdge:(float)proximity {
-    // the scroll distance grows as the proximity to the edge decreases, so that moving the thumb
+- (float)autoscrollDistanceForProximityToEdge:(float)proximity
+{
+    // the scroll distance grows as the proximity to the edge decreases, so that moving the item
     // further over results in faster scrolling.
-    return ceilf((AUTOSCROLL_THRESHOLD - proximity) / 5.0);
+    return ceilf((self.autoscrollThreshold - proximity) / 5.0);
 }
 
-- (void)legalizeAutoscrollDistance {
+- (void)legalizeAutoscrollDistance
+{
     // makes sure the autoscroll distance won't result in scrolling past the content of the scroll view
     float minimumLegalDistance = [self contentOffset].x * -1;
     float maximumLegalDistance = [self contentSize].width - ([self frame].size.width + [self contentOffset].x);
@@ -263,7 +319,8 @@ static const int kTempItemMargin = 10;
     self.autoscrollDistance = MIN(self.autoscrollDistance, maximumLegalDistance);
 }
 
-- (void)autoscrollTimerFired:(NSTimer*)timer {
+- (void)autoscrollTimerFired:(NSTimer*)timer
+{
     [self legalizeAutoscrollDistance];
     
     // autoscroll by changing content offset
@@ -271,11 +328,15 @@ static const int kTempItemMargin = 10;
     contentOffset.x += self.autoscrollDistance;
     [self setContentOffset:contentOffset];
     
-    // adjust thumb position so it appears to stay still
+    // adjust item position so it appears to stay still
     ADItemView *item = (ADItemView *)[timer userInfo];
     [item moveByOffset:CGPointMake(self.autoscrollDistance, 0)];
 }
 
+- (NSInteger)scrollViewContentOffset
+{
+    return self.contentOffset.x;
+}
 
 
 #pragma mark - Scroll View Delegate

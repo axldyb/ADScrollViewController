@@ -9,6 +9,10 @@
 #import "DemoScrollViewController.h"
 #import "ADItemView.h"
 
+static const int kADItemViewPadding = 10;
+static const int kADItemViewWidth = 80;
+static const int kADItemViewHeight = 80;
+
 @interface DemoScrollViewController ()
 
 @end
@@ -26,10 +30,15 @@
 }
 
 
+#pragma mark - ADScrollView Data Source
+
 - (NSInteger)numberOfItemsInScrollView:(ADScrollView *)scrollView
 {
     return 40;
 }
+
+
+#pragma mark - ADScrollView Delegate
 
 - (ADItemView *)scrollView:(ADScrollView *)scrollView itemAtIndex:(NSInteger)index
 {
@@ -39,12 +48,36 @@
         itemView = [[ADItemView alloc] init];
     }
     
-    CGRect itemFrame = CGRectMake(10 + (100 * index) , 10, 80, 80);
-    [itemView setFrame:itemFrame];
+    CGRect itemFrame;
+    itemFrame.origin.x = kADItemViewPadding + (100 * index);
+    itemFrame.origin.y = kADItemViewPadding;
+    itemFrame.size.width = kADItemViewWidth;
+    itemFrame.size.height = kADItemViewHeight;
     
+    [itemView setFrame:itemFrame];
     itemView.backgroundColor = [UIColor yellowColor];
     
     return itemView;
+}
+
+- (NSInteger)itemViewPaddingForScrollview:(ADScrollView *)scrollView
+{
+    return kADItemViewPadding;
+}
+
+- (CGSize)itemViewSizeForScrollview:(ADScrollView *)scrollView
+{
+    return CGSizeMake(kADItemViewWidth, kADItemViewHeight);
+}
+
+- (NSInteger)autoscrollingThresholdForScrollview:(ADScrollView *)scrollView
+{
+    return 30;
+}
+
+- (NSInteger)itemViewDragThresholdForScrollview:(ADScrollView *)scrollView
+{
+    return 10;
 }
 
 @end

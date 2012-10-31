@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 Aksel Dybdal. All rights reserved.
 //
 
-static const int kADItemViewDragThreshold = 10;
-
 #import "ADItemView.h"
 
 @interface ADItemView ()
@@ -33,6 +31,11 @@ static const int kADItemViewDragThreshold = 10;
     // store the location of the starting touch so we can decide when we've moved far enough to drag
     self.touchLocation = [[touches anyObject] locationInView:self];
     self.homeInSuperview = [[touches anyObject] locationInView:self.superview.superview.superview.superview]; // ? to many
+    
+    if ([self.delegate respondsToSelector:@selector(itemViewStartedTracking:)])
+    {
+        [self.delegate itemViewStartedTracking:self];
+    }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -48,10 +51,23 @@ static const int kADItemViewDragThreshold = 10;
         float deltaX = newTouchLocation.x - self.touchLocation.x;
         float deltaY = newTouchLocation.y - self.touchLocation.y;
         [self moveByOffset:CGPointMake(deltaX, deltaY)];
+        
+        if([self itemViewHasLeftParentView])
+        {
+            if ([self.moveDelegate respondsToSelector:@selector(itemViewLeftParentScrollView:)])
+            {
+                [self.moveDelegate itemViewLeftParentScrollView:self];
+            }
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(itemViewMoved:)])
+        {
+            [self.delegate itemViewMoved:self];
+        }
     }
     
     // if we're not dragging yet, check if we've moved far enough from the initial point to start
-    else if (distanceBetweenPoints(self.touchLocation, newTouchLocation) > kADItemViewDragThreshold)
+    else if (distanceBetweenPoints(self.touchLocation, newTouchLocation) > self.dragThreshold)
     {
         self.touchLocation = newTouchLocation;
         self.dragging = YES;
@@ -86,6 +102,11 @@ static const int kADItemViewDragThreshold = 10;
         [self goHome];
         
         self.dragging = NO;
+        
+        if ([self.delegate respondsToSelector:@selector(itemViewStoppedTracking:)])
+        {
+            [self.delegate itemViewStoppedTracking:self];
+        }
         
     }
     else if ([[touches anyObject] tapCount] == 1)
@@ -123,6 +144,32 @@ static const int kADItemViewDragThreshold = 10;
     [UIView setAnimationDuration:animationDuration];
     [self setFrame:[self home]];
     [UIView commitAnimations];
+}
+
+
+#pragma mark - Distance between points
+
+- (BOOL)itemViewHasLeftParentView
+{
+    CGRect parentFrame;
+    parentFrame.origin = [self.superview convertPoint:self.frame.origin toView:nil];
+    parentFrame.size = self.superview.frame.size;
+    
+    CGRect selfInSuperview;
+    selfInSuperview.origin = [self convertPoint:self.frame.origin toView:nil];
+    selfInSuperview.size.width = self.frame.size.width - [self.delegate scrollViewContentOffset];
+    selfInSuperview.size.height = self.frame.size.height;
+    
+    //NSLog(@"Parent: %@, self: %@", NSStringFromCGRect(parentFrame), NSStringFromCGRect(selfInSuperview));
+    
+    if(CGRectIntersectsRect(selfInSuperview, parentFrame))
+    {
+        return NO;
+    }
+    else
+    {
+        return YES;
+    }
 }
 
 #pragma mark - Move By Offset

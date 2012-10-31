@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ADItemViewDelegate.h"
+#import "ADItemViewMoveDelegate.h" 
 
 @interface ADItemView : UIView
 
@@ -16,6 +18,12 @@
 
 // Location of touch in own coordinates (stays constant during dragging).
 @property (nonatomic, assign) CGPoint touchLocation;
+
+@property (nonatomic, assign) NSInteger dragThreshold;
+
+@property (unsafe_unretained) id <ADItemViewDelegate> delegate;
+
+@property (unsafe_unretained) id <ADItemViewMoveDelegate> moveDelegate;
 
 - (void)goHome;
 

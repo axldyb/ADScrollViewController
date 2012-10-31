@@ -25,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9C9347F81641298900F63E3A /* ADItemViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADItemViewDelegate.h; sourceTree = "<group>"; };
 		BB53A418162F406A00D2FBCD /* ADItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADItemView.h; sourceTree = "<group>"; };
 		BB53A419162F406A00D2FBCD /* ADItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADItemView.m; sourceTree = "<group>"; };
 		BB53A41C162F536C00D2FBCD /* ADScrollViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADScrollViewDelegate.h; sourceTree = "<group>"; };
@@ -52,7 +53,7 @@
 		BB7BFA24162CA5E400A68B37 /* ADScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADScrollViewController.m; sourceTree = "<group>"; };
 		BB7BFA26162CA6B800A68B37 /* ADScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADScrollView.h; sourceTree = "<group>"; };
 		BB7BFA27162CA6B800A68B37 /* ADScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADScrollView.m; sourceTree = "<group>"; };
-		BBE67EC3163F55CC003F393E /* ADContainerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADContainerDelegate.h; sourceTree = "<group>"; };
+		BBE67EC3163F55CC003F393E /* ADItemViewMoveDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADItemViewMoveDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +104,8 @@
 			children = (
 				BB53A41C162F536C00D2FBCD /* ADScrollViewDelegate.h */,
 				BB53A421162F544600D2FBCD /* ADScrollViewDataSource.h */,
-				BBE67EC3163F55CC003F393E /* ADContainerDelegate.h */,
+				BBE67EC3163F55CC003F393E /* ADItemViewMoveDelegate.h */,
+				9C9347F81641298900F63E3A /* ADItemViewDelegate.h */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -295,7 +297,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -317,7 +319,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -331,6 +333,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ADScrollViewController/ADScrollViewController-Prefix.pch";
 				INFOPLIST_FILE = "ADScrollViewController/ADScrollViewController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -342,6 +345,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ADScrollViewController/ADScrollViewController-Prefix.pch";
 				INFOPLIST_FILE = "ADScrollViewController/ADScrollViewController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

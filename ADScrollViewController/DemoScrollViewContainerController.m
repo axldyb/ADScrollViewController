@@ -43,7 +43,9 @@ enum {
         NSString *levelName = [self levelNameForIndex:i];
         DemoScrollViewController *scrollViewController = [[DemoScrollViewController alloc] initWithFrame:scrollViewFrame andLevelName:levelName];
         scrollViewController.scrollView.backgroundColor = [UIColor blueColor];
-        scrollViewController.scrollView.contentSize = CGSizeMake(2000, 100);
+        
+#warning Need a method in scrollview to calculate content size
+        //scrollViewController.scrollView.contentSize = CGSizeMake(2000, 100);
         
         [self addScrollView:scrollViewController];
     }

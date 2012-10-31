@@ -61,6 +61,7 @@
 {
     [self.scrollViews addObject:scrollViewController];
     [self.view addSubview:scrollViewController.view];
+    [self addDelegateForItemsInScrollView:scrollViewController];
 }
 
 - (void)removeScrollView:(ADScrollViewController *)scrollViewController
@@ -68,6 +69,25 @@
     [self.scrollViews removeObject:scrollViewController];
     [scrollViewController removeFromParentViewController];
     scrollViewController = nil;
+}
+
+
+#pragma mark - Set ADItemViewMoveDelegate
+
+- (void)addDelegateForItemsInScrollView:(ADScrollViewController *)scrollViewController
+{
+    for (ADItemView *itemView in scrollViewController.scrollView.visibleItems)
+    {
+        itemView.moveDelegate = self;
+    }
+}
+
+
+#pragma mark - ADItemViewMoveDelegate
+
+- (void)itemViewLeftParentScrollView:(ADItemView *)itemView
+{
+    NSLog(@"I leave now");
 }
 
 @end

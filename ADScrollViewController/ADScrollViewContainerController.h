@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ADScrollViewController.h"
 
-@interface ADScrollViewContainerController : UIViewController
+@interface ADScrollViewContainerController : UIViewController <ADItemViewMoveDelegate>
 
 @property (nonatomic, strong) NSMutableArray *scrollViews;
 

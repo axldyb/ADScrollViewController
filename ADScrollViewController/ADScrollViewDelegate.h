@@ -19,4 +19,12 @@
 @optional
 - (void)scrollView:(ADScrollView *)scrollView didSelectItemAtIndex:(NSInteger)index;
 
+- (NSInteger)itemViewPaddingForScrollview:(ADScrollView *)scrollView;
+
+- (CGSize)itemViewSizeForScrollview:(ADScrollView *)scrollView;
+
+- (NSInteger)autoscrollingThresholdForScrollview:(ADScrollView *)scrollView;
+
+- (NSInteger)itemViewDragThresholdForScrollview:(ADScrollView *)scrollView;
+
 @end

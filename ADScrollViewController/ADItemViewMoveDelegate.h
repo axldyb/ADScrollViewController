@@ -1,5 +1,5 @@
 //
-//  ADContainerDelegate.h
+//  ADItemViewMoveDelegate.h
 //  ADScrollViewController
 //
 //  Created by Aksel Dybdal on 30.10.12.
@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-//@class ADScrollViewContainerController;
+@class ADItemView;
 
-@protocol ADContainerDelegate <NSObject>
+@protocol ADItemViewMoveDelegate <NSObject>
 
 @required
-- (void)notyestblabla;
+- (void)itemViewLeftParentScrollView:(ADItemView*)itemView;
 
 @end

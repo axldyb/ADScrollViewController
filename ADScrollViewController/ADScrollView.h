@@ -10,11 +10,13 @@
 #import "ADScrollViewDelegate.h"
 #import "ADScrollViewDataSource.h"
 
-@interface ADScrollView : UIScrollView
+@interface ADScrollView : UIScrollView <ADItemViewDelegate>
 
-@property (nonatomic, assign) id<ADScrollViewDelegate> ADDelegate;
+@property (unsafe_unretained) id<ADScrollViewDelegate> ADDelegate;
 
-@property (nonatomic, assign) id<ADScrollViewDataSource> dataSource;
+@property (unsafe_unretained) id<ADScrollViewDataSource> dataSource;
+
+@property (nonatomic, strong) NSMutableSet *visibleItems;
 
 #warning Add standard margins with option to adjust
 
