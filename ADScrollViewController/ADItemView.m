@@ -56,7 +56,7 @@
         {
             if ([self.moveDelegate respondsToSelector:@selector(itemView:leftParentScrollView:)])
             {
-                //[self.moveDelegate itemView:self leftParentScrollView:(ADScrollView *)self.superview];
+                [self.moveDelegate itemView:self leftParentScrollView:(ADScrollView *)self.superview];
             }
         }
         

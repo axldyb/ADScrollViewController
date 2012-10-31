@@ -87,19 +87,38 @@
 
 - (void)itemView:(ADItemView *)itemView leftParentScrollView:(ADScrollView *)scrollView
 {
-    NSLog(@"I leave now");
+    //NSLog(@"Parent: %@, self: %@", NSStringFromCGRect(parentFrame), NSStringFromCGRect(selfInSuperview));
+    
     for (ADScrollViewController *scrollViewController in self.scrollViews)
     {
-        if (scrollViewController.scrollView == scrollView)
+        if (scrollViewController.scrollView != scrollView)
         {
-            itemView.originParentView = scrollView;
-            //[itemView removeFromSuperview];
-            [scrollView.visibleItems removeObject:itemView];
-            [scrollViewController removeItemView:itemView];
-        }
-        else
-        {
-            NSLog(@"Just trolling around in space");
+            CGRect itemViewInSuperview;
+            itemViewInSuperview.origin = [itemView.superview convertPoint:itemView.frame.origin toView:nil];
+            itemViewInSuperview.size.width = itemView.frame.size.width;
+            itemViewInSuperview.size.height = itemView.frame.size.height;
+            
+            CGRect scrollViewInSuperview = scrollViewController.scrollView.frame;
+            scrollViewInSuperview.size.width = scrollViewController.scrollView.frame.size.width;
+            scrollViewInSuperview.size.height = scrollViewController.scrollView.frame.size.height;
+            
+            //NSLog(@"Scroll %@: %@, Item: %@", scrollViewController.levelNameString, NSStringFromCGRect(scrollViewInSuperview), NSStringFromCGRect(itemViewInSuperview));
+            
+            if (CGRectIntersectsRect(itemViewInSuperview, scrollViewInSuperview))
+            {
+                //NSLog(@"I leave now");
+                itemView.originParentView = scrollView;
+                
+                [itemView removeFromSuperview];
+                [self.view addSubview:itemView];
+                
+                [scrollView.visibleItems removeObject:itemView];
+                [scrollViewController removeItemView:itemView];
+            }
+            else
+            {
+                //NSLog(@"Just trolling around in space");
+            }
         }
     }
 }

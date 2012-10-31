@@ -54,7 +54,7 @@ enum {
 - (NSString *)levelNameForIndex:(NSInteger)index
 {
     NSString *levelName = nil;
-    switch (kLevelName) {
+    switch (index) {
         case kLevelOne:
             levelName = @"LevelOne";
             break;

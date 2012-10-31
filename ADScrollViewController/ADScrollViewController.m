@@ -59,7 +59,7 @@
 {
     [self.items removeObject:itemView];
     
-    [self.scrollView reloadItems];
+    //[self.scrollView reloadItems];
 }
 
 

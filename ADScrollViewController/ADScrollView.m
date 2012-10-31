@@ -225,7 +225,9 @@
 
 - (void)itemViewStartedTracking:(ADItemView *)itemView
 {
-    //[self bringSubviewToFront:tiv];
+    [self bringSubviewToFront:itemView];
+    
+    // Call delegate to move scroll to front!
 }
 
 - (void)itemViewMoved:(ADItemView *)itemView
