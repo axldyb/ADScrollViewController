@@ -20,6 +20,7 @@
 // Apparence properties
 @property (nonatomic, assign) NSInteger itemPadding;
 @property (nonatomic, assign) NSInteger autoscrollThreshold;
+@property (nonatomic, assign) NSInteger numberOfItems;
 
 @end
 
@@ -69,6 +70,23 @@
     return _autoscrollThreshold;
 }
 
+- (NSInteger)numberOfItems
+{
+    if (!_numberOfItems)
+    {
+        if ([self.dataSource respondsToSelector:@selector(numberOfItemsInScrollView:)])
+        {
+            _numberOfItems = [self.dataSource numberOfItemsInScrollView:self];
+        }
+        else
+        {
+            _numberOfItems = 3; // Some random default
+        }
+    }
+    
+    return _numberOfItems;
+}
+
 #pragma mark - Setup
 
 - (void)setUpScrollView
@@ -97,19 +115,12 @@
 
 - (void)loadItems
 {
-    NSInteger numberOfItems;
-    
-    if ([self.dataSource respondsToSelector:@selector(numberOfItemsInScrollView:)])
-    {
-        numberOfItems = [self.dataSource numberOfItemsInScrollView:self];
-    }
-    
     // Calculate which items are visible
     CGRect visibleBounds = self.bounds;
     int firstNeededPageIndex = floorf(CGRectGetMinX(visibleBounds) / 100);
     int lastNeededPageIndex  = floorf((CGRectGetMaxX(visibleBounds)-1) / 100);
     firstNeededPageIndex = MAX(firstNeededPageIndex, 0);
-    lastNeededPageIndex  = MIN(lastNeededPageIndex, numberOfItems - 1);
+    lastNeededPageIndex  = MIN(lastNeededPageIndex, self.numberOfItems - 1);
     
     // Recycle no-longer-visible items
     for (ADItemView *itemView in self.visibleItems)
@@ -144,9 +155,7 @@
         }
     }
     
-    // Set content size. Should it be set every time?
-    ADItemView *item = [self.visibleItems anyObject];
-    self.contentSize = CGSizeMake(numberOfItems * item.frame.size.width + item.frame.size.width / 5, self.frame.size.height);
+    [self updateContentSize];
 }
 
 - (ADItemView *)dequeueRecycledItem // Make public
@@ -178,9 +187,12 @@
 
 - (void)itemsGotRearranged
 {
+    NSInteger itemViewSpace = [self singleItemViewTotalWidth];
+    
     for (ADItemView *itemView in self.visibleItems)
     {
-        
+        NSInteger newIndex = itemView.frame.origin.x / itemViewSpace;
+        itemView.index = newIndex;
         
         // Update database here as well
     }
@@ -245,6 +257,8 @@
             
             [otherItem goHome];
             draggingItemShift += ([otherItem frame].size.width + self.itemPadding) * (draggingRight ? 1 : -1);
+            
+            [self itemsGotRearranged]; // TODO: (AD) fix to run olny once, not for each item to shit.
         }
         
         // change the home of the dragging item, but don't send it there because it's still being dragged
@@ -344,6 +358,24 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self loadItems];
+}
+
+
+#pragma mark - Size Helpers
+
+- (void)updateContentSize
+{
+    NSInteger itemViewSpace = [self singleItemViewTotalWidth];
+    self.contentSize = CGSizeMake(self.numberOfItems * itemViewSpace, self.frame.size.height);
+}
+
+- (NSInteger)singleItemViewTotalWidth
+{
+    NSInteger itemViewPadding = [self.ADDelegate itemViewPaddingForScrollview:self];
+    CGSize itemViewSize = [self.ADDelegate itemViewSizeForScrollview:self];
+    NSInteger itemViewSpace = itemViewSize.width + (itemViewPadding * 2);
+    
+    return itemViewSpace;
 }
 
 @end
