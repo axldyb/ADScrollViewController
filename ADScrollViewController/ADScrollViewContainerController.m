@@ -89,31 +89,41 @@
 {
     //NSLog(@"Parent: %@, self: %@", NSStringFromCGRect(parentFrame), NSStringFromCGRect(selfInSuperview));
     
+    // Loop scroll view controllers to find the one to edit in
     for (ADScrollViewController *scrollViewController in self.scrollViews)
     {
+        // Make sure it's not the one the item belongs to
         if (scrollViewController.scrollView != scrollView)
         {
-            CGRect itemViewInSuperview;
-            itemViewInSuperview.origin = [itemView.superview convertPoint:itemView.frame.origin toView:nil];
-            itemViewInSuperview.size.width = itemView.frame.size.width;
-            itemViewInSuperview.size.height = itemView.frame.size.height;
+            CGRect itemViewInSuperview = itemViewPositionInWindow(itemView);
+            //CGRect scrollViewInSuperview = scrollViewPositionInWindow(scrollViewController.scrollView);
             
-            CGRect scrollViewInSuperview = scrollViewController.scrollView.frame;
-            scrollViewInSuperview.size.width = scrollViewController.scrollView.frame.size.width;
-            scrollViewInSuperview.size.height = scrollViewController.scrollView.frame.size.height;
+            //NSLog(@"Scroll %@: %@, Item: %@", scrollViewController.levelNameString, NSStringFromCGRect(scrollViewController.scrollView.frame), NSStringFromCGRect(itemViewInSuperview));
             
-            //NSLog(@"Scroll %@: %@, Item: %@", scrollViewController.levelNameString, NSStringFromCGRect(scrollViewInSuperview), NSStringFromCGRect(itemViewInSuperview));
-            
-            if (CGRectIntersectsRect(itemViewInSuperview, scrollViewInSuperview))
+            // Check if the item view is intersecting with the scroll view 
+            if (CGRectIntersectsRect(itemViewInSuperview, scrollViewController.scrollView.frame))
             {
-                //NSLog(@"I leave now");
+                //[itemView setDelegate:scrollViewController.scrollView];
+                
+                // Keep a refrence to the parent scroll view in case we abort the edit.
                 itemView.originParentView = scrollView;
                 
+                // Remove from old scroll view
                 [itemView removeFromSuperview];
-                [self.view addSubview:itemView];
-                
+                //[self.view addSubview:itemView];
                 [scrollView.visibleItems removeObject:itemView];
-                [scrollViewController removeItemView:itemView];
+                
+                // Remove from source located in scroll view controller and add to new
+                for (ADScrollViewController *scrollViewControllerToRemoveItem in self.scrollViews)
+                {
+                    if (scrollViewControllerToRemoveItem.scrollView == scrollView)
+                    {
+                        [scrollViewControllerToRemoveItem removeItemView:itemView];
+                        
+                        
+                        [scrollViewController addItemView:itemView];
+                    }
+                }
             }
             else
             {
@@ -126,6 +136,29 @@
 - (void)itemView:(ADItemView *)itemView droppedOutsideParentScrollView:(ADScrollView *)scrollView
 {
     NSLog(@"Poff!");
+}
+
+
+#pragma mark - Point in other view
+
+CGRect itemViewPositionInWindow(UIView *itemView)
+{
+    CGRect itemViewInSuperview;
+    itemViewInSuperview.origin = [itemView convertPoint:itemView.frame.origin toView:nil];
+    itemViewInSuperview.size.width = itemView.frame.size.width;
+    itemViewInSuperview.size.height = itemView.frame.size.height;
+    NSLog(@"Pos: %@", NSStringFromCGRect(itemViewInSuperview));
+    
+    return itemViewInSuperview;
+}
+
+CGRect scrollViewPositionInWindow(UIScrollView *scrollView)
+{
+    CGRect scrollViewInSuperview = scrollView.frame;
+    //scrollViewInSuperview.size.width = scrollView.frame.size.width;
+    //scrollViewInSuperview.size.height = scrollView.frame.size.height;
+    
+    return scrollViewInSuperview;
 }
 
 @end
