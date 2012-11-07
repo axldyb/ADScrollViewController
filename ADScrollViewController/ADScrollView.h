@@ -26,4 +26,8 @@
 
 - (ADItemView *)dequeueRecycledItem;
 
+- (void)makeSpaceForHooveringItem:(ADItemView *)itemView;
+
+- (void)sendAllItemViewsHome;
+
 @end

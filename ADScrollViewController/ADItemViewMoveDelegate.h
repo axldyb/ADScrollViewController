@@ -14,8 +14,13 @@
 @protocol ADItemViewMoveDelegate <NSObject>
 
 @required
-- (void)itemView:(ADItemView*)itemView leftParentScrollView:(ADScrollView *)scrollView;
 
-- (void)itemView:(ADItemView*)itemView droppedOutsideParentScrollView:(ADScrollView *)scrollView;
+- (void)itemView:(ADItemView *)itemView startedTrackingInScrollView:(ADScrollView *)scrollView;
+
+- (void)itemView:(ADItemView *)itemView stoppedTrackingWithParentScrollView:(ADScrollView *)scrollView;
+
+- (void)itemView:(ADItemView *)itemView isTrackingWithParentScrollView:(ADScrollView *)scrollView;
+
+- (void)itemView:(ADItemView *)itemView droppedOutsideParentScrollView:(ADScrollView *)scrollView;
 
 @end

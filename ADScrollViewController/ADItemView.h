@@ -21,6 +21,8 @@
 // Location of touch in own coordinates (stays constant during dragging).
 @property (nonatomic, assign) CGPoint touchLocation;
 
+@property (nonatomic, assign) CGPoint locationInSuperview;
+
 @property (nonatomic, assign) NSInteger dragThreshold;
 
 @property (nonatomic, strong) ADScrollView *originParentView;
@@ -32,6 +34,8 @@
 @property (unsafe_unretained) id <ADItemViewMoveDelegate> moveDelegate;
 
 - (void)goHome;
+
+- (void)goToTempHome:(CGRect)tempHome;
 
 - (void)moveByOffset:(CGPoint)offset;
 

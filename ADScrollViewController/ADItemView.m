@@ -7,10 +7,10 @@
 //
 
 #import "ADItemView.h"
+#import "AppDelegate.h"
 
 @interface ADItemView ()
 
-@property (nonatomic, assign) CGPoint homeInSuperview;
 @property (nonatomic, assign) BOOL dragging;
 
 @end
@@ -30,16 +30,27 @@
 {
     // store the location of the starting touch so we can decide when we've moved far enough to drag
     self.touchLocation = [[touches anyObject] locationInView:self];
-    self.homeInSuperview = [[touches anyObject] locationInView:self.superview.superview.superview.superview]; // ? to many
     
+    // Brings self to front
     if ([self.delegate respondsToSelector:@selector(itemViewStartedTracking:)])
     {
         [self.delegate itemViewStartedTracking:self];
+    }
+    
+    // Brings parent scrollview to front
+    if ([self.moveDelegate respondsToSelector:@selector(itemView:startedTrackingInScrollView:)])
+    {
+        [self.moveDelegate itemView:self startedTrackingInScrollView:(ADScrollView *)self.superview];
     }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    // Keep track of position in superview
+    CGPoint touchInSuperView = [[touches anyObject] locationInView:[[[UIApplication sharedApplication] delegate] window]];
+    self.locationInSuperview = CGPointMake(touchInSuperView.x - self.touchLocation.x, touchInSuperView.y - self.touchLocation.y); // ? to many
+    //NSLog(@"LOC: %@", NSStringFromCGPoint(self.locationInSuperview));
+    
     // we want to establish a minimum distance that the touch has to move before it counts as dragging,
     // so that the slight movement involved in a tap doesn't cause the frame to move.
     
@@ -52,12 +63,9 @@
         float deltaY = newTouchLocation.y - self.touchLocation.y;
         [self moveByOffset:CGPointMake(deltaX, deltaY)];
         
-        if([self itemViewHasLeftParentView])
+        if ([self.moveDelegate respondsToSelector:@selector(itemView:isTrackingWithParentScrollView:)])
         {
-            if ([self.moveDelegate respondsToSelector:@selector(itemView:leftParentScrollView:)])
-            {
-                [self.moveDelegate itemView:self leftParentScrollView:(ADScrollView *)self.superview];
-            }
+            [self.moveDelegate itemView:self isTrackingWithParentScrollView:(ADScrollView *)self.superview];
         }
         
         if ([self.delegate respondsToSelector:@selector(itemViewMoved:)])
@@ -103,9 +111,16 @@
         
         self.dragging = NO;
         
+    
+        // Updating delegates
         if ([self.delegate respondsToSelector:@selector(itemViewStoppedTracking:)])
         {
             [self.delegate itemViewStoppedTracking:self];
+        }
+        
+        if ([self.moveDelegate respondsToSelector:@selector(itemView:stoppedTrackingWithParentScrollView:)])
+        {
+            [self.moveDelegate itemView:self stoppedTrackingWithParentScrollView:(ADScrollView *)self.superview];
         }
         
     }
@@ -125,8 +140,15 @@
     self.dragging = NO;
     
     // Do we need this?
-    //if ([_delegate respondsToSelector:@selector(thumbImageViewStoppedTracking:)])
-    //  [_delegate thumbImageViewStoppedTracking:self];
+    if ([self.delegate respondsToSelector:@selector(itemViewStoppedTracking:)])
+    {
+        [self.delegate itemViewStoppedTracking:self];
+    }
+    
+    if ([self.moveDelegate respondsToSelector:@selector(itemView:stoppedTrackingWithParentScrollView:)])
+    {
+        [self.moveDelegate itemView:self stoppedTrackingWithParentScrollView:(ADScrollView *)self.superview];
+    }
 }
 
 
@@ -146,8 +168,22 @@
     [UIView commitAnimations];
 }
 
+- (void)goToTempHome:(CGRect)tempHome
+{
+    // distance is in pixels
+    float distanceFromHome = distanceBetweenPoints([self frame].origin, tempHome.origin);
+    
+    // duration is in seconds, so each additional pixel adds only 1/1000th of a second.
+    float animationDuration = 0.1 + distanceFromHome * 0.001;
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:animationDuration];
+    [self setFrame:tempHome];
+    [UIView commitAnimations];
+}
 
-#pragma mark - Distance between points
+/*
+#pragma mark - Item has left parent view
 
 - (BOOL)itemViewHasLeftParentView
 {
@@ -171,6 +207,7 @@
         return YES;
     }
 }
+ */
 
 #pragma mark - Move By Offset
 

@@ -9,6 +9,8 @@
 #import "ADScrollViewController.h"
 #import "ADItemView.h"
 
+//static const int kStatusBarHeight = 30;
+
 @interface ADScrollViewController ()
 
 @end
@@ -47,20 +49,43 @@
 
 #pragma mark - Item Add/Remove
 
-- (void)addItemView:(UIView *)itemView
+- (void)addItemView:(ADItemView *)itemView // used for drop? rename?
 {
     [self.items addObject:itemView];
     
-    [self.scrollView addSubview:itemView];
+    //NSInteger newIndex = [self calculateNewIndexForItemView:itemView]; ??
+    //itemView.index = newIndex;
+    
+    // Persist here ?
+    
+    [self.scrollView addSubview:itemView]; // If not existing?
     //[self.scrollView reloadItems];
 }
 
-- (void)removeItemView:(UIView *)itemView
+- (void)removeItemView:(ADItemView *)itemView
 {
     [self.items removeObject:itemView];
     
     //[self.scrollView reloadItems];
 }
+
+/*
+- (void)addHooveringItemView:(ADItemView *)itemView
+{
+    CGRect itemViewFrameInScrollView = [self calculateNewFrameForItemView:itemView];
+    //NSLog(@"Item old pos: %@", NSStringFromCGRect(itemView.frame));
+    itemView.frame = itemViewFrameInScrollView;
+    //NSLog(@"Item NEW pos: %@", NSStringFromCGRect(itemView.frame));
+    
+    CGRect itemViewHomeInScrollView = [self calculateNewHomeForItemView:itemView];
+    itemView.home = itemViewHomeInScrollView;
+    
+    // Move other tiles away
+    NSInteger temporaryIndex = [self calculateNewIndexForItemView:itemView];
+    [self.scrollView makeSpaceForNewItemAtIndex:temporaryIndex];
+    
+    [self.scrollView addSubview:itemView];
+}*/
 
 
 #pragma mark - ADScrollView Data Source
@@ -95,12 +120,78 @@
     //NSLog(@"%@, old:%i, new:%i", (NSString *)objectToMove, oldIndex, newIndex);
 }
 
+#warning Change standard values to be const
+- (NSInteger)itemViewPaddingForScrollview:(ADScrollView *)scrollView
+{
+    return 0;
+}
+
+- (CGSize)itemViewSizeForScrollview:(ADScrollView *)scrollView
+{
+    return CGSizeMake(10, 10);
+}
+
+- (NSInteger)autoscrollingThresholdForScrollview:(ADScrollView *)scrollView
+{
+    return 30;
+}
+
+- (NSInteger)itemViewDragThresholdForScrollview:(ADScrollView *)scrollView
+{
+    return 10;
+}
+
+
+/*
+#pragma mark - ItemView calculations
+
+- (CGRect)calculateNewFrameForItemView:(ADItemView *)itemView
+{
+    int newX = itemView.locationInSuperview.x - self.scrollView.frame.origin.x + self.scrollView.contentOffset.x;
+    int newY = itemView.locationInSuperview.y - self.scrollView.frame.origin.y - kStatusBarHeight;
+    
+    CGRect newFrame = itemView.frame;
+    newFrame.origin = CGPointMake(newX, newY);
+    
+    return newFrame;
+}
+
+- (CGRect)calculateNewHomeForItemView:(ADItemView *)itemView
+{
+    NSInteger padding = [self itemViewPaddingForScrollview:self.scrollView];
+    NSInteger index = [self calculateNewIndexForItemView:itemView];
+    NSInteger itemWidth = [self itemWidthForItemView:itemView];
+    
+    CGRect newFrame = [self calculateNewFrameForItemView:itemView];
+    newFrame.origin.y = padding;
+    newFrame.origin.x = (index * itemWidth) + padding;
+    
+    return newFrame;
+}
+
+- (NSInteger)calculateNewIndexForItemView:(ADItemView *)itemView
+{
+    CGRect itemFrame = [self calculateNewFrameForItemView:itemView];
+    NSInteger itemWidth = [self itemWidthForItemView:itemView];
+
+    return itemFrame.origin.x / itemWidth;
+}
+
+- (NSInteger)itemWidthForItemView:(ADItemView *)itemView
+{
+    NSInteger padding = [self itemViewPaddingForScrollview:self.scrollView];
+    CGSize itemViewSize = [self itemViewSizeForScrollview:self.scrollView];
+    return itemViewSize.width + (padding * 2);
+}
+ */
+
 
 #pragma mark - Content Cross Level Modification Delegate
 
 - (void)addItemView:(ADItemView *)itemView atIndex:(NSInteger)index
 {
     // Do I need the item index or can i just use - (void)addItemView:(UIView *)itemView
+    // USing thie first one for now. calculation of index goes in this class.
 }
 
 - (void)removeItemView:(ADItemView *)itemView atIndex:(NSInteger)index
@@ -108,6 +199,16 @@
     
 }
 
-#pragma mark - Content Reorder Delegate
+
+#pragma mark - Point in other view
+
+CGRect itemViewPositionForWindow(ADItemView *itemView)
+{
+    CGRect itemViewInSuperview;
+    itemViewInSuperview = itemView.frame;
+    itemViewInSuperview.origin = CGPointMake(itemView.locationInSuperview.x , itemView.locationInSuperview.y);
+    
+    return itemViewInSuperview;
+}
 
 @end

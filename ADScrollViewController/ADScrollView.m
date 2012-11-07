@@ -8,6 +8,8 @@
 
 #import "ADScrollView.h"
 
+static const int kStatusBarHeight = 30;
+
 @interface ADScrollView () <UIScrollViewDelegate>
 
 // Recycling property
@@ -183,7 +185,52 @@
 }
 
 
-#pragma mark - Calculate Index For Item
+#pragma mark - Editing Item Order
+
+- (void)makeSpaceForHooveringItem:(ADItemView *)itemView
+{
+    //NSLog(@"Location in windiw: %@", NSStringFromCGPoint(itemView.locationInSuperview));
+    //NSLog(@"------------------: %@", NSStringFromCGRect(self.frame));
+    
+    
+    NSInteger x = itemView.locationInSuperview.x + (itemView.frame.size.width / 2);
+    NSInteger y = itemView.locationInSuperview.y + (itemView.frame.size.height / 2);
+    CGPoint itemViewFrameCenterOnScreen = CGPointMake(x, y);
+    
+    if (CGRectContainsPoint(self.frame, itemViewFrameCenterOnScreen))
+    {
+        NSInteger itemViewWidth = [self singleItemViewTotalWidth];
+        NSInteger index = [self calculateTemporaryMovingIndex:itemView];
+        
+        for (ADItemView *itemViewToMove in self.visibleItems)
+        {
+            if (itemViewToMove.index >= index)
+            {
+                CGRect tempHome = [itemViewToMove home];
+                tempHome.origin.x += itemViewWidth;
+                [itemViewToMove goToTempHome:tempHome];
+            }
+        }
+    }
+    else
+    {
+        for (ADItemView *itemViewToMove in self.visibleItems)
+        {
+            [itemViewToMove goHome];
+        }
+    }
+}
+
+- (void)sendAllItemViewsHome
+{
+    for (ADItemView *itemViewToMove in self.visibleItems)
+    {
+        [itemViewToMove goHome];
+    }
+}
+
+
+#pragma mark - Calculate Indexes For Internal Reordering
 
 - (void)orderRearrangedByItem:(ADItemView *)itemView
 {
@@ -210,7 +257,7 @@
         // Set view new index
         itemView.index = newIndex;
         
-        // Update database here as well
+        // Update database here as well. Or not?
     }
     
     for (ADItemView *visibleItemView in self.visibleItems)
@@ -218,6 +265,49 @@
         NSInteger newVisibleIndex = visibleItemView.frame.origin.x / itemViewSpace;
         visibleItemView.index = newVisibleIndex;
     }
+}
+
+
+#pragma mark - ItemView calculations
+
+- (CGRect)calculateNewFrameForItemView:(ADItemView *)itemView
+{
+    int newX = itemView.locationInSuperview.x - self.frame.origin.x + self.contentOffset.x;
+    int newY = itemView.locationInSuperview.y - self.frame.origin.y - kStatusBarHeight;
+    
+    CGRect newFrame = itemView.frame;
+    newFrame.origin = CGPointMake(newX, newY);
+    
+    return newFrame;
+}
+
+- (CGRect)calculateNewHomeForItemView:(ADItemView *)itemView
+{
+    NSInteger padding = [self.ADDelegate itemViewPaddingForScrollview:self];
+    NSInteger index = [self calculateNewIndexForItemView:itemView];
+    NSInteger itemWidth = [self singleItemViewTotalWidth];
+    
+    CGRect newFrame = [self calculateNewFrameForItemView:itemView];
+    newFrame.origin.y = padding;
+    newFrame.origin.x = (index * itemWidth) + padding;
+    
+    return newFrame;
+}
+
+- (NSInteger)calculateNewIndexForItemView:(ADItemView *)itemView
+{
+    CGRect itemFrame = [self calculateNewFrameForItemView:itemView];
+    NSInteger itemWidth = [self singleItemViewTotalWidth];
+    
+    return itemFrame.origin.x / itemWidth;
+}
+
+- (NSInteger)calculateTemporaryMovingIndex:(ADItemView *)itemView
+{
+    CGRect itemFrame = [self calculateNewFrameForItemView:itemView];
+    NSInteger itemWidth = [self singleItemViewTotalWidth];
+    
+    return (itemFrame.origin.x + (itemWidth / 2)) / itemWidth;
 }
 
 
@@ -396,9 +486,8 @@
 {
     NSInteger itemViewPadding = [self.ADDelegate itemViewPaddingForScrollview:self];
     CGSize itemViewSize = [self.ADDelegate itemViewSizeForScrollview:self];
-    NSInteger itemViewSpace = itemViewSize.width + (itemViewPadding * 2);
     
-    return itemViewSpace;
+    return itemViewSize.width + (itemViewPadding * 2);
 }
 
 @end

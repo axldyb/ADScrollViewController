@@ -85,34 +85,67 @@
 
 #pragma mark - ADItemViewMoveDelegate
 
-- (void)itemView:(ADItemView *)itemView leftParentScrollView:(ADScrollView *)scrollView
+- (void)itemView:(ADItemView *)itemView stratedTrackingInScrollView:(ADScrollView *)scrollView
+{
+    // Make sure the new scroll view is in front
+    [self.view bringSubviewToFront:scrollView];
+}
+
+- (void)itemView:(ADItemView *)itemView stoppedTrackingWithParentScrollView:(ADScrollView *)scrollView
+{
+    for (ADScrollViewController *scrollViewController in self.scrollViews)
+    {
+        [scrollViewController.scrollView sendAllItemViewsHome];
+    }
+}
+
+- (void)itemView:(ADItemView *)itemView isTrackingWithParentScrollView:(ADScrollView *)scrollView
 {
     //NSLog(@"Parent: %@, self: %@", NSStringFromCGRect(parentFrame), NSStringFromCGRect(selfInSuperview));
     
     // Loop scroll view controllers to find the one to edit in
-    for (ADScrollViewController *scrollViewController in self.scrollViews)
+    for (ADScrollViewController *hooveredScrollViewController in self.scrollViews)
     {
         // Make sure it's not the one the item belongs to
-        if (scrollViewController.scrollView != scrollView)
+        if (hooveredScrollViewController.scrollView != scrollView)
         {
+            [hooveredScrollViewController.scrollView makeSpaceForHooveringItem:itemView];
+            
+            //[scrollView.visibleItems removeObject:itemView];
             CGRect itemViewInSuperview = itemViewPositionInWindow(itemView);
             //CGRect scrollViewInSuperview = scrollViewPositionInWindow(scrollViewController.scrollView);
             
-            //NSLog(@"Scroll %@: %@, Item: %@", scrollViewController.levelNameString, NSStringFromCGRect(scrollViewController.scrollView.frame), NSStringFromCGRect(itemViewInSuperview));
+            //NSLog(@"Scroll %@: %@, Item: %@", hooveredScrollViewController.levelNameString, NSStringFromCGRect(hooveredScrollViewController.scrollView.frame), NSStringFromCGRect(itemViewInSuperview));
             
             // Check if the item view is intersecting with the scroll view 
-            if (CGRectIntersectsRect(itemViewInSuperview, scrollViewController.scrollView.frame))
+            if (CGRectIntersectsRect(itemViewInSuperview, hooveredScrollViewController.scrollView.frame))
             {
-                //[itemView setDelegate:scrollViewController.scrollView];
                 
+                //[itemView setDelegate:hooveredScrollViewController.scrollView];
+                
+                /*********************************************************************
+                for (ADScrollViewController *scrollViewControllerToRemoveItem in self.scrollViews)
+                {
+                    if (scrollViewControllerToRemoveItem.scrollView == scrollView)
+                    {
+                        NSLog(@"Move from: %@ to: %@", scrollViewControllerToRemoveItem.levelNameString, hooveredScrollViewController.levelNameString);
+                    }
+                }
+                *********************************************************************/
+                
+                
+                
+                /*********************************************************************
                 // Keep a refrence to the parent scroll view in case we abort the edit.
                 itemView.originParentView = scrollView;
                 
                 // Remove from old scroll view
-                [itemView removeFromSuperview];
+                //[itemView removeFromSuperview];
                 //[self.view addSubview:itemView];
                 [scrollView.visibleItems removeObject:itemView];
                 
+                
+// THIS IS FOR DROP
                 // Remove from source located in scroll view controller and add to new
                 for (ADScrollViewController *scrollViewControllerToRemoveItem in self.scrollViews)
                 {
@@ -120,10 +153,12 @@
                     {
                         [scrollViewControllerToRemoveItem removeItemView:itemView];
                         
+                        NSLog(@"Move from: %@ to: %@", scrollViewControllerToRemoveItem.levelNameString, hooveredScrollViewController.levelNameString);
                         
-                        [scrollViewController addItemView:itemView];
+                        [hooveredScrollViewController addHooveringItemView:itemView];
                     }
                 }
+                *********************************************************************/
             }
             else
             {
@@ -141,13 +176,12 @@
 
 #pragma mark - Point in other view
 
-CGRect itemViewPositionInWindow(UIView *itemView)
+CGRect itemViewPositionInWindow(ADItemView *itemView)
 {
     CGRect itemViewInSuperview;
-    itemViewInSuperview.origin = [itemView convertPoint:itemView.frame.origin toView:nil];
-    itemViewInSuperview.size.width = itemView.frame.size.width;
-    itemViewInSuperview.size.height = itemView.frame.size.height;
-    NSLog(@"Pos: %@", NSStringFromCGRect(itemViewInSuperview));
+    itemViewInSuperview = itemView.frame;
+    itemViewInSuperview.origin = CGPointMake(itemView.locationInSuperview.x , itemView.locationInSuperview.y);
+    //NSLog(@"Pos: %@", NSStringFromCGRect(itemViewInSuperview));
     
     return itemViewInSuperview;
 }

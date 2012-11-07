@@ -21,8 +21,10 @@
 
 - (id)initWithFrame:(CGRect)frame andLevelName:(NSString *)levelName;
 
-- (void)addItemView:(UIView *)itemView;
+- (void)addItemView:(ADItemView *)itemView;
 
-- (void)removeItemView:(UIView *)itemView;
+- (void)removeItemView:(ADItemView *)itemView;
+
+- (void)addHooveringItemView:(ADItemView *)itemView;
 
 @end
