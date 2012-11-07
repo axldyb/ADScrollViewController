@@ -112,7 +112,7 @@
             [hooveredScrollViewController.scrollView makeSpaceForHooveringItem:itemView];
             
             //[scrollView.visibleItems removeObject:itemView];
-            CGRect itemViewInSuperview = itemViewPositionInWindow(itemView);
+            CGRect itemViewInSuperview = itemViewFrameInWindow(itemView);
             //CGRect scrollViewInSuperview = scrollViewPositionInWindow(scrollViewController.scrollView);
             
             //NSLog(@"Scroll %@: %@, Item: %@", hooveredScrollViewController.levelNameString, NSStringFromCGRect(hooveredScrollViewController.scrollView.frame), NSStringFromCGRect(itemViewInSuperview));
@@ -168,15 +168,49 @@
     }
 }
 
-- (void)itemView:(ADItemView *)itemView droppedOutsideParentScrollView:(ADScrollView *)scrollView
+- (void)itemView:(ADItemView *)itemView isDroppedWithParentScrollView:(ADScrollView *)scrollView
 {
     NSLog(@"Poff!");
+    for (ADScrollViewController *hooveredScrollViewController in self.scrollViews)
+    {
+        // Make sure it's not the one the item belongs to
+        if (hooveredScrollViewController.scrollView != scrollView)
+        {
+            CGRect itemViewInSuperview = itemViewFrameInWindow(itemView);
+            
+            // Check if the item view is intersecting with the scroll view so we can dropp it there.
+            if (CGRectIntersectsRect(itemViewInSuperview, hooveredScrollViewController.scrollView.frame))
+            {
+                // Drop item
+                NSLog(@"Dropping!");
+                
+                for (ADScrollViewController *scrollViewControllerToRemoveItem in self.scrollViews)
+                {
+                    if (scrollViewControllerToRemoveItem.scrollView == scrollView)
+                    {
+                        [scrollViewControllerToRemoveItem removeItemView:itemView];
+                        
+                        NSLog(@"Move from: %@ to: %@", scrollViewControllerToRemoveItem.levelNameString, hooveredScrollViewController.levelNameString);
+                        
+                        [hooveredScrollViewController addItemView:itemView];
+                        
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                NSLog(@"Going home called in the itemView's touchesEnded!");
+                //[itemView goHome];
+            }
+        }
+    }
 }
 
 
 #pragma mark - Point in other view
 
-CGRect itemViewPositionInWindow(ADItemView *itemView)
+CGRect itemViewFrameInWindow(ADItemView *itemView)
 {
     CGRect itemViewInSuperview;
     itemViewInSuperview = itemView.frame;

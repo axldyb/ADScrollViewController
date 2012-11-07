@@ -21,6 +21,6 @@
 
 - (void)itemView:(ADItemView *)itemView isTrackingWithParentScrollView:(ADScrollView *)scrollView;
 
-- (void)itemView:(ADItemView *)itemView droppedOutsideParentScrollView:(ADScrollView *)scrollView;
+- (void)itemView:(ADItemView *)itemView isDroppedWithParentScrollView:(ADScrollView *)scrollView;
 
 @end

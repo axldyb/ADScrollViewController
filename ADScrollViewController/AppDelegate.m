@@ -18,6 +18,9 @@
     DemoScrollViewContainerController *demoScrollViewContainerController = [[DemoScrollViewContainerController alloc] init];
     self.window.rootViewController = demoScrollViewContainerController;
     [self.window makeKeyAndVisible];
+    
+    NSSetUncaughtExceptionHandler(&onUncaughtException);
+    
     return YES;
 }
 
@@ -46,6 +49,11 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+void onUncaughtException(NSException* exception)
+{
+    NSLog(@"uncaught exception: %@", exception.description);
 }
 
 @end

@@ -25,6 +25,4 @@
 
 - (void)removeItemView:(ADItemView *)itemView;
 
-- (void)addHooveringItemView:(ADItemView *)itemView;
-
 @end

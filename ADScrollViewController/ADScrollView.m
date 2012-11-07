@@ -192,7 +192,6 @@ static const int kStatusBarHeight = 30;
     //NSLog(@"Location in windiw: %@", NSStringFromCGPoint(itemView.locationInSuperview));
     //NSLog(@"------------------: %@", NSStringFromCGRect(self.frame));
     
-    
     NSInteger x = itemView.locationInSuperview.x + (itemView.frame.size.width / 2);
     NSInteger y = itemView.locationInSuperview.y + (itemView.frame.size.height / 2);
     CGPoint itemViewFrameCenterOnScreen = CGPointMake(x, y);
@@ -217,6 +216,20 @@ static const int kStatusBarHeight = 30;
         for (ADItemView *itemViewToMove in self.visibleItems)
         {
             [itemViewToMove goHome];
+        }
+    }
+}
+
+- (void)makeSpaceForNewItemAtIndex:(NSInteger)index
+{
+    for (ADItemView *itemView in self.visibleItems)
+    {
+        if (itemView.index >= index)
+        {
+            CGRect newHome = [itemView home];
+            newHome.origin.x += [self singleItemViewTotalWidth];
+            [itemView setHome:newHome];
+            [itemView goHome];
         }
     }
 }
@@ -272,6 +285,11 @@ static const int kStatusBarHeight = 30;
 
 - (CGRect)calculateNewFrameForItemView:(ADItemView *)itemView
 {
+    /**
+     Used to calculate a new frame for the item view based on its
+     location in the scollview.
+     */
+    
     int newX = itemView.locationInSuperview.x - self.frame.origin.x + self.contentOffset.x;
     int newY = itemView.locationInSuperview.y - self.frame.origin.y - kStatusBarHeight;
     
@@ -283,6 +301,11 @@ static const int kStatusBarHeight = 30;
 
 - (CGRect)calculateNewHomeForItemView:(ADItemView *)itemView
 {
+    /**
+     Used to calculate a new home for the item view based on its
+     location in the scollview and it's index.
+     */
+    
     NSInteger padding = [self.ADDelegate itemViewPaddingForScrollview:self];
     NSInteger index = [self calculateNewIndexForItemView:itemView];
     NSInteger itemWidth = [self singleItemViewTotalWidth];
@@ -296,6 +319,11 @@ static const int kStatusBarHeight = 30;
 
 - (NSInteger)calculateNewIndexForItemView:(ADItemView *)itemView
 {
+    /**
+     Used to calculate a new index for the item view based on its 
+     location in the scollview.
+     */
+    
     CGRect itemFrame = [self calculateNewFrameForItemView:itemView];
     NSInteger itemWidth = [self singleItemViewTotalWidth];
     
@@ -304,6 +332,13 @@ static const int kStatusBarHeight = 30;
 
 - (NSInteger)calculateTemporaryMovingIndex:(ADItemView *)itemView
 {
+    /**
+     This method use used when an item is hoovering a scroller 
+     which is not it's parent view. It makes sure the movement
+     of the moving item view is calculated from the editing 
+     item views center.
+     */
+    
     CGRect itemFrame = [self calculateNewFrameForItemView:itemView];
     NSInteger itemWidth = [self singleItemViewTotalWidth];
     

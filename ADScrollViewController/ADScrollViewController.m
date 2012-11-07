@@ -9,7 +9,7 @@
 #import "ADScrollViewController.h"
 #import "ADItemView.h"
 
-//static const int kStatusBarHeight = 30;
+static const int kStatusBarHeight = 30;
 
 @interface ADScrollViewController ()
 
@@ -51,12 +51,23 @@
 
 - (void)addItemView:(ADItemView *)itemView // used for drop? rename?
 {
-    [self.items addObject:itemView];
+    CGRect itemViewFrameInScrollView = [self calculateNewFrameForItemView:itemView];
+    //NSLog(@"Item old pos: %@", NSStringFromCGRect(itemView.frame));
+    itemView.frame = itemViewFrameInScrollView;
+    //NSLog(@"Item NEW pos: %@", NSStringFromCGRect(itemView.frame));
     
-    //NSInteger newIndex = [self calculateNewIndexForItemView:itemView]; ??
-    //itemView.index = newIndex;
+    CGRect itemViewHomeInScrollView = [self calculateNewHomeForItemView:itemView];
+    itemView.home = itemViewHomeInScrollView;
+    
+    // Move other tiles away
+    NSInteger index = [self calculateNewIndexForItemView:itemView];
+    [self.scrollView makeSpaceForNewItemAtIndex:index];
+    itemView.index = index;
     
     // Persist here ?
+    
+    [self.items addObject:itemView];
+    [self.scrollView.visibleItems addObject:itemView];
     
     [self.scrollView addSubview:itemView]; // If not existing?
     //[self.scrollView reloadItems];
@@ -65,6 +76,7 @@
 - (void)removeItemView:(ADItemView *)itemView
 {
     [self.items removeObject:itemView];
+    [itemView removeFromSuperview];
     
     //[self.scrollView reloadItems];
 }
@@ -142,7 +154,6 @@
 }
 
 
-/*
 #pragma mark - ItemView calculations
 
 - (CGRect)calculateNewFrameForItemView:(ADItemView *)itemView
@@ -183,7 +194,6 @@
     CGSize itemViewSize = [self itemViewSizeForScrollview:self.scrollView];
     return itemViewSize.width + (padding * 2);
 }
- */
 
 
 #pragma mark - Content Cross Level Modification Delegate

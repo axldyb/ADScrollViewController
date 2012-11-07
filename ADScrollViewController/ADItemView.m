@@ -85,7 +85,7 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if (self.dragging) {
-        
+        /*
         CGPoint activePoint = [[touches anyObject] locationInView:self.superview.superview.superview.superview];
         CGPoint pointOnTileTouched = [[touches anyObject] locationInView:self];
         
@@ -100,14 +100,27 @@
         {
             //[_delegate tileDroppedOnBoard:self withXPos:pointForTileCopyX withYPos:pointForTileCopyY withCode:NO];
         }
+         */
 
+        if ([self.moveDelegate respondsToSelector:@selector(itemView:isDroppedWithParentScrollView:)])
+        {
+            [self.moveDelegate itemView:self isDroppedWithParentScrollView:(ADScrollView *)self.superview];
+        }
+        else
+        {
+            NSException *exception = [NSException exceptionWithName: @"No delegate"
+                                                             reason: @"MoveDelegate does not respond to itemView:isDroppedWithParentScrollView:"
+                                                           userInfo: nil];
+            @throw exception;
+        }
+        
         
         //if ([self.editModeDelegate respondsToSelector:@selector(userHasLetGoOfTile:)])
         //{
         //    [self.editModeDelegate userHasLetGoOfTile:self];
         //}
         
-        [self goHome];
+        [self goHome];  // May cause double home going if we call goHome in the dropped method
         
         self.dragging = NO;
         

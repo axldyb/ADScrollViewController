@@ -28,6 +28,8 @@
 
 - (void)makeSpaceForHooveringItem:(ADItemView *)itemView;
 
+- (void)makeSpaceForNewItemAtIndex:(NSInteger)index;
+
 - (void)sendAllItemViewsHome;
 
 @end
